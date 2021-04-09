@@ -1,0 +1,5 @@
+mainmenu.c:9:6:expHandler	4	static
+mainmenu.c:13:6:expplotHandler	4	static
+mainmenu.c:16:6:aboutHandler	4	static
+mainmenu.c:26:6:checkMainButtons	8	static
+mainmenu.c:35:6:drawMainButtons	8	static

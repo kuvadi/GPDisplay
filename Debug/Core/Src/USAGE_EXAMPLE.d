@@ -1,0 +1,1 @@
+Core/Src/USAGE_EXAMPLE.o: ../Core/Src/USAGE_EXAMPLE.c

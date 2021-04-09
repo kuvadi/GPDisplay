@@ -1,0 +1,5 @@
+read_screen_sd.c:25:6:sd_init	8	static
+read_screen_sd.c:28:6:read_exp_menu	24	static
+read_screen_sd.c:37:6:read_numpad	16	static
+read_screen_sd.c:46:6:read_plot	16	static
+read_screen_sd.c:54:6:writeFile	16	static

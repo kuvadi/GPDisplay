@@ -1,0 +1,14 @@
+expmenu.c:5:6:methodHandler	4	static
+expmenu.c:9:6:rangeHandler	16	static
+expmenu.c:14:6:eiHandler	16	static
+expmenu.c:20:6:er1Handler	16	static
+expmenu.c:25:6:er2Handler	16	static
+expmenu.c:30:6:rateHandler	16	static
+expmenu.c:34:6:scanHandler	16	static
+expmenu.c:38:6:resHandler	16	static
+expmenu.c:42:6:qtimeHandler	16	static
+expmenu.c:46:6:cellHandler	16	static
+expmenu.c:50:6:channelHandler	16	static
+expmenu.c:54:6:expStartHandler	16	static
+expmenu.c:76:6:checkExperimentButtons	8	static
+expmenu.c:103:6:drawExperimentMenu	16	static

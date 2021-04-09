@@ -1,0 +1,15 @@
+numpad.c:6:6:oneHandler	16	static
+numpad.c:16:6:twoHandler	16	static
+numpad.c:25:6:threeHandler	16	static
+numpad.c:34:6:fourHandler	16	static
+numpad.c:43:6:fiveHandler	16	static
+numpad.c:52:6:sixHandler	16	static
+numpad.c:61:6:sevenHandler	16	static
+numpad.c:70:6:eightHandler	16	static
+numpad.c:79:6:nineHandler	16	static
+numpad.c:88:6:dotHandler	4	static
+numpad.c:94:6:zeroHandler	8	static
+numpad.c:106:6:enterHandler	4	static
+numpad.c:113:6:removeHandler	24	static
+numpad.c:143:6:checkNumpadButtons	8	static
+numpad.c:170:6:drawNumpad	56	static
