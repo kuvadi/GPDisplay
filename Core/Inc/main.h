@@ -61,6 +61,7 @@ void Error_Handler(void);
 //Functions and Variables
 enum State {MAINMENU, EXPMENU, NUMPAD, PLOT, PASTMENU, ABOUT};
 enum State state;
+enum State oldState;
 char *expname;
 float *expData;
 float minY, maxY;

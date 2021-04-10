@@ -52,7 +52,7 @@ void read_plot(){
 }
 
 void writeFile(uint16_t *fb){
-	fresult = f_open(&fil, "plot.dat", FA_CREATE_ALWAYS | FA_WRITE);
+	fresult = f_open(&fil, "numpad.dat", FA_CREATE_ALWAYS | FA_WRITE);
 	fresult = f_write(&fil, fb, 160*128*2, &bw);
 	f_close(&fil);
 }

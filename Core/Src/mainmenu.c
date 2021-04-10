@@ -11,7 +11,7 @@ void expHandler() {
 
 }
 void expplotHandler() {
-	state = PASTMENU;
+	state = PLOT;
 }
 void aboutHandler() {
 

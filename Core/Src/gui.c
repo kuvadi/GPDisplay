@@ -19,16 +19,29 @@ void EXTI15_10_IRQHandler(void) {
 	ILI9163_drawPixel(x, y, GREEN);
 	XPT2046_TouchGetCoordinates(&x, &y);
 	scrolling = 0;
-	while (!HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_11)) {
+	uint8_t scrolled = 0;
+	while (!HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_11) && state == EXPMENU) {
 		uint16_t xLast, yLast;
 		XPT2046_TouchGetCoordinates(&xLast, &yLast);
 
+		// Check if scrolling
+		HAL_Delay(100);
 		if (HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_11)) {
 			break;
 		}
+		scrolled = 1;
+
 		scrolling = -(yLast - y - 20);
+		if(scrolling+position > 160){
+			scrolling = 160-position;
+		}
+		else if(scrolling+position < 0){
+			scrolling = -position;
+		}
+
 		//read_exp_menu(scrolling+position);
 		drawExperimentMenu(1);
+		ILI9163_drawRect(0, ((scrolling+position)*140)/160, 4, (((scrolling+position)*140)/160)+20, 3, GREEN);
 		ILI9163_render();
 
 	}
@@ -36,15 +49,17 @@ void EXTI15_10_IRQHandler(void) {
 	if (position < 0) {
 		position = 0;
 	}
-	if (position > 140)
-		position = 140;
+	if (position > 160)
+		position = 160;
+	if(scrolled == 1)
+		return;
 	switch (state) {
 	case MAINMENU:
 		checkMainButtons();
 		break;
 	case EXPMENU:
 
-		//checkExperimentButtons();
+		checkExperimentButtons();
 
 		break;
 	case PLOT:
@@ -65,13 +80,15 @@ void EXTI15_10_IRQHandler(void) {
 		break;
 	case EXPMENU:
 		drawExperimentMenu(0);
-
+		ILI9163_drawRect(0, ((position)*140)/160, 4, (((position)*140)/160)+20, 3, GREEN);
 		break;
 	case PLOT:
 		read_plot();
 			break;
 	case NUMPAD:
 		position = 0;
+		if(	oldState != NUMPAD)
+			read_numpad();
 		drawNumpad();
 
 		break;
@@ -112,12 +129,17 @@ void drawWholeGraph() {
 	//clear graph
 	ILI9163_newFrame();
 	float max = -999.0f, min = 999.0f;
-	for (int i = 0; i < dataCount; i++) {
-		if (expData[i] < min) {
-			min = expData[i];
+	for (int i = 2; i < dataCount-2; i++) {
+		if ((expData[i - 2] + expData[i - 1] + expData[i] + expData[i + 1]
+				+ expData[i + 2]) / 5 < min) {
+			min = (expData[i - 2] + expData[i - 1] + expData[i] + expData[i + 1]
+					+ expData[i + 2]) / 5;
+			;
 		}
-		if (expData[i] > max) {
-			max = expData[i];
+		if ((expData[i - 2] + expData[i - 1] + expData[i] + expData[i + 1]
+				+ expData[i + 2]) / 5 > max) {
+			max = (expData[i - 2] + expData[i - 1] + expData[i] + expData[i + 1]
+					+ expData[i + 2]) / 5;
 		}
 	}
 	minY = min;
@@ -190,7 +212,7 @@ void drawGraph() {
 }
 
 int isPressed(Button button) {
-	return (x > button.x1 && x < button.x2 && y - position > button.y1
-			&& y - position < button.y2);
+	return (x > button.x1 && x < button.x2 && y + position > button.y1
+			&& y + position < button.y2);
 }
 
