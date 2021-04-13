@@ -104,7 +104,9 @@ Button expButton = { 8, 122, 36, 62, "", 0x00f0, expStartHandler };
 
 //BUTTON CONTROL
 void checkExperimentButtons() {
-	if (isPressed(methodButton)) {
+	if (isPressed(backButton)) {
+		backButton.btnHandler();
+	} else if (isPressed(methodButton)) {
 		methodButton.btnHandler();
 	} else if (isPressed(rangeButton)) {
 		rangeButton.btnHandler();
@@ -128,9 +130,7 @@ void checkExperimentButtons() {
 		channelButton.btnHandler();
 	} else if (isPressed(expButton)) {
 		expButton.btnHandler();
-	}else if (isPressed(backButton)) {
-		backButton.btnHandler();
-		}
+	}
 }
 void drawExperimentMenu(uint8_t mode) {
 	drawImage(expImage, mode);

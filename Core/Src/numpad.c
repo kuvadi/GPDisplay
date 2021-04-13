@@ -130,9 +130,10 @@ void enterHandler() {
 	state = EXPMENU;
 }
 void removeHandler() {
-	if (isFloat) {
-		int removedDigit = (number * pow(10, -fractionCount));
-		number = number - removedDigit * (10, fractionCount);
+	if (isFloat) {// problem
+		int removedDigit = (int)(number * pow(10, -fractionCount)) % 10;
+		number = number - removedDigit * pow(10, fractionCount);
+		fractionCount++;
 	}
 	else{
 		int removedDigit = (int) number % 10;
@@ -160,6 +161,9 @@ Button dotButton = { 0, 42, 128, 160, "", 0x00f0, dotHandler };
 Button zeroButton = { 43, 85, 128, 160, "", 0x00f0, zeroHandler };
 Button enterButton = { 85, 128, 128, 160, "", 0x00f0, enterHandler };
 
+Button removeButton = { 99, 121, 6, 27, "", 0x00f0, removeHandler };
+
+
 //BUTTON CONTROL
 void checkNumpadButtons() {
 	if (isPressed(oneButton)) {
@@ -186,7 +190,9 @@ void checkNumpadButtons() {
 		zeroButton.btnHandler();
 	} else if (isPressed(enterButton)) {
 		enterButton.btnHandler();
-	}
+	}else if (isPressed(removeButton)) {
+		removeButton.btnHandler();
+		}
 }
 void drawNumpad() {
 
@@ -202,7 +208,8 @@ void drawNumpad() {
 	// Print as parts, note that you need 0-padding for fractional bit.
 
 	sprintf(numberString, "%s%d.%d", tmpSign, tmpInt1, tmpInt2);
-
+	ILI9163_fillRect(19, 5,92, 27, WHITE);
+	ILI9163_drawButton(&removeButton);
 	ILI9163_drawString(70 - digitNumber * 7, 10, Font_7x10, GREEN,
 			numberString);
 	switch (selectedParameter) {

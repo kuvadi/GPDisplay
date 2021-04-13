@@ -85,57 +85,49 @@ void MX_USB_HOST_Process(void);
 uint8_t SPI_DMA_FL = 0;
 uint32_t SPI_DMA_CNT = 1;
 
-
-
-
-
-
-
-
-
 /* USER CODE END 0 */
 
 /**
-  * @brief  The application entry point.
-  * @retval int
-  */
-int main(void)
-{
-  /* USER CODE BEGIN 1 */
+ * @brief  The application entry point.
+ * @retval int
+ */
+int main(void) {
+	/* USER CODE BEGIN 1 */
 
-  /* USER CODE END 1 */
+	/* USER CODE END 1 */
 
-  /* MCU Configuration--------------------------------------------------------*/
+	/* MCU Configuration--------------------------------------------------------*/
 
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+	HAL_Init();
+	srand((unsigned int) time(NULL));
+	/* USER CODE BEGIN Init */
 
-  /* USER CODE BEGIN Init */
+	/* USER CODE END Init */
 
-  /* USER CODE END Init */
+	/* Configure the system clock */
+	SystemClock_Config();
 
-  /* Configure the system clock */
-  SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
+	/* USER CODE BEGIN SysInit */
 	state = MAINMENU;
 	oldState = MAINMENU;
-  /* USER CODE END SysInit */
+	/* USER CODE END SysInit */
 
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_DMA_Init();
-  MX_ADC1_Init();
-  MX_RTC_Init();
-  MX_USART2_UART_Init();
-  MX_USB_HOST_Init();
-  MX_SPI1_Init();
-  MX_FATFS_Init();
-  MX_SPI3_Init();
-  /* USER CODE BEGIN 2 */
+	/* Initialize all configured peripherals */
+	MX_GPIO_Init();
+	MX_DMA_Init();
+	MX_ADC1_Init();
+	MX_RTC_Init();
+	MX_USART2_UART_Init();
+	MX_USB_HOST_Init();
+	MX_SPI1_Init();
+	MX_FATFS_Init();
+	MX_SPI3_Init();
+	/* USER CODE BEGIN 2 */
+	X = -50.0;
 	GUI_init();
-	fresult = f_mount(&fs, "" ,0);
-	GUI_drawGUI(huart2);
+	fresult = f_mount(&fs, "", 0);
+
 	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 1, 1);
 
@@ -195,8 +187,15 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+	unsigned long i = 0;
 	 while (1) {
-		//GUI_drawGUI(huart2);
+		 i++;
+		 if(i > 500000){
+			 if(state == PLOT)
+				 GUI_drawGUI(huart2);
+			 i = 0;
+		 }
+
     /* USER CODE END WHILE */
 
 

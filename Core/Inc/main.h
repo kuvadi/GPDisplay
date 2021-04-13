@@ -65,6 +65,7 @@ enum State oldState;
 char *expname;
 float *expData;
 float minY, maxY;
+float X;
 uint8_t dataCount;
 
 unsigned long flastp;

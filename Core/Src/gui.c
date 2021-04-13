@@ -41,7 +41,7 @@ void EXTI15_10_IRQHandler(void) {
 
 		//read_exp_menu(scrolling+position);
 		drawExperimentMenu(1);
-		ILI9163_drawRect(0, ((scrolling+position)*140)/160, 4, (((scrolling+position)*140)/160)+20, 3, GREEN);
+		ILI9163_drawRect(0, ((scrolling+position)*140)/160, 4, (((scrolling+position)*140)/160)+20, 3, GREEN); // scroll bar
 		ILI9163_render();
 
 	}
@@ -63,6 +63,9 @@ void EXTI15_10_IRQHandler(void) {
 
 		break;
 	case PLOT:
+		checkPlotButtons();
+
+
 		break;
 	case NUMPAD:
 		checkNumpadButtons();
@@ -80,11 +83,11 @@ void EXTI15_10_IRQHandler(void) {
 		break;
 	case EXPMENU:
 		drawExperimentMenu(0);
-		ILI9163_drawRect(0, ((position)*140)/160, 4, (((position)*140)/160)+20, 3, GREEN);
+		ILI9163_drawRect(0, ((position)*140)/160, 4, (((position)*140)/160)+20, 3, GREEN); // scroll bar
 		break;
 	case PLOT:
-		read_plot();
-			break;
+		drawPlot();
+		break;
 	case NUMPAD:
 		position = 0;
 		if(	oldState != NUMPAD)
@@ -93,7 +96,6 @@ void EXTI15_10_IRQHandler(void) {
 
 		break;
 	case PASTMENU:
-		drawGraph();
 		break;
 	case ABOUT:
 		break;
@@ -106,6 +108,12 @@ void EXTI15_10_IRQHandler(void) {
 void GUI_drawGUI(UART_HandleTypeDef huart) {
 
 	// need to call for interrupts
+	if (X > 50.0)
+		return;
+	float y = (float) ((rand() % 1000)/2 );
+	X = X + 1.0;
+	exp_isr(X, y);
+	ILI9163_render();
 
 }
 
@@ -117,99 +125,6 @@ void drawExpMenu() {
 
 }
 
-void drawPoint(float x, float y) {
-
-	dataCount++;
-	expData[dataCount] = y;
-	drawWholeGraph();
-
-}
-
-void drawWholeGraph() {
-	//clear graph
-	ILI9163_newFrame();
-	float max = -999.0f, min = 999.0f;
-	for (int i = 2; i < dataCount-2; i++) {
-		if ((expData[i - 2] + expData[i - 1] + expData[i] + expData[i + 1]
-				+ expData[i + 2]) / 5 < min) {
-			min = (expData[i - 2] + expData[i - 1] + expData[i] + expData[i + 1]
-					+ expData[i + 2]) / 5;
-			;
-		}
-		if ((expData[i - 2] + expData[i - 1] + expData[i] + expData[i + 1]
-				+ expData[i + 2]) / 5 > max) {
-			max = (expData[i - 2] + expData[i - 1] + expData[i] + expData[i + 1]
-					+ expData[i + 2]) / 5;
-		}
-	}
-	minY = min;
-	maxY = max;
-	for (int i = 2; i < dataCount - 3; i++) {
-		float val = (expData[i - 2] + expData[i - 1] + expData[i]
-				+ expData[i + 1] + expData[i + 2]) / 5;
-		float nextVal = (expData[i - 1] + expData[i] + expData[i + 1]
-				+ expData[i + 2] + expData[i + 3]) / 5;
-		ILI9163_drawLine(i * 128 / dataCount, val * 128 / (maxY - minY),
-				i * 128 / dataCount + 128 / dataCount,
-				nextVal * 128 / (maxY - minY), BLACK);
-	}
-}
-
-void drawGraph() {
-
-	//test data
-	float data[] = { 0.0056, 0.0103961, 0.02415, 0.03572, 0.04311, 0.052359,
-			0.05763, 0.0609, 0.06253, 0.0624, 0.060879, 0.05807, 0.05404,
-			0.0491, 0.0434, 0.0372472, 0.03007, 0.02333, 0.01689, 0.0103,
-			0.0035, 0.06093, 0.062531, 0.06241, 0.0608, 0.05807, 0.0540,
-			0.04917, 0.02704, 0.0372, 0.0306, 0.0237, 0.005624, 0.01031,
-			0.02418, 0.0357, 0.0431, 0.052399, 0.0573, 0.0609, 0.062, 0.06242,
-			0.0608, 0.05806, 0.0540, 0.049, 0.04347, 0.03724, 0.03062, 0.0237,
-			0.0168, 0.0100, 0.0035, 0.0609, 0.062, 0.0624, 0.0608, 0.0580,
-			0.0540, 0.0491, 0.0434, 0.0372, 0.0306, 0.0237, 0.0035, 0.06093,
-			0.062531, 0.06241, 0.0608, 0.05807, 0.0540, 0.04917, 0.02704,
-			0.0372, 0.0306, 0.0237, 0.005624, 0.01031, 0.02418, 0.0357, 0.0431,
-			0.052399, 0.0573, 0.0609, 0.062, 0.06242, 0.0608, 0.05806, 0.0540,
-			0.049, 0.04347, 0.03724, 0.03062, 0.0237, 0.0168, 0.0100, 0.0035,
-			0.0609, 0.062, 0.0624, 0.0608, 0.0580, 0.0540, 0.0491, 0.0434,
-			0.0372, 0.0306, 0.0237, 0.0035, 0.06093, 0.062531, 0.06241, 0.0608,
-			0.05807, 0.0540, 0.04917, 0.02704, 0.0372, 0.0306, 0.0237, 0.005624,
-			0.01031, 0.02418, 0.0357, 0.0431, 0.052399, 0.0573, 0.0609, 0.062,
-			0.06242, 0.0608, 0.05806, 0.0540, 0.049, 0.04347, 0.03724, 0.03062,
-			0.0237, 0.0168, 0.0100, 0.0035, 0.0609, 0.062, 0.0624, 0.0608,
-			0.0580, 0.0540, 0.0491, 0.0434, 0.0372, 0.0306, 0.0237, 0.0035,
-			0.06093, 0.062531, 0.06241, 0.0608, 0.05807, 0.0540, 0.04917,
-			0.02704, 0.0372, 0.0306, 0.0237, 0.005624, 0.01031, 0.02418, 0.0357,
-			0.0431, 0.052399, 0.0573, 0.0609, 0.062, 0.06242, 0.0608, 0.05806,
-			0.0540, 0.049, 0.04347, 0.03724, 0.03062, 0.0237, 0.0168, 0.0100,
-			0.0035, 0.0609, 0.062, 0.0624, 0.0608, 0.0580, 0.0540, 0.0491,
-			0.0434, 0.0372, 0.0306, 0.0237, 0.0035, 0.06093, 0.062531, 0.06241,
-			0.0608, 0.05807, 0.0540, 0.04917, 0.02704, 0.0372, 0.0306, 0.0237,
-			0.005624, 0.01031, 0.02418, 0.0357, 0.0431, 0.052399, 0.0573,
-			0.0609, 0.062, 0.06242, 0.0608, 0.05806, 0.0540, 0.049, 0.04347,
-			0.03724, 0.03062, 0.0237, 0.0168, 0.0100, 0.0035, 0.0609, 0.062,
-			0.0624, 0.0608, 0.0580, 0.0540, 0.0491, 0.0434, 0.0372, 0.0306,
-			0.0237 };
-	float max = 0.0f, min = 999.0f;
-	for (int i = 0; i < 100; i++) {
-		if (*(data + i) < min) {
-			min = *(data + i);
-		}
-		if (*(data + i) > max) {
-			max = *(data + i);
-		}
-	}
-	uint16_t pixVal = 0;
-	uint16_t nextVal = 0;
-	for (int i = 0; i < 100; i++) {
-		pixVal = *(data + i) * 128 / (max - min);
-		nextVal = *(data + i + 1) * 128 / (max - min);
-		if (pixVal <= nextVal)
-			ILI9163_drawLine(i * 2, pixVal, (i + 1) * 2, nextVal, WHITE);
-		else
-			ILI9163_drawLine(i * 2, pixVal, (i + 1) * 2, nextVal, WHITE);
-	}
-}
 
 int isPressed(Button button) {
 	return (x > button.x1 && x < button.x2 && y + position > button.y1
