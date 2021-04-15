@@ -102,14 +102,13 @@ void nineHandler() {
 }
 void dotHandler() {
 	if(isFloat ==0){
-		digitNumber++;
 		isFloat = 1;
 	}
 
 	oldState = NUMPAD;
 }
 void zeroHandler() {
-	if (number != 0.0f) {
+	if (number != 0.0) {
 		if (isFloat) {
 			fractionCount--;
 		}
@@ -137,11 +136,17 @@ void removeHandler() {
 	}
 	else{
 		int removedDigit = (int) number % 10;
-		number = number / 10.0f;
-		number = number - (0.1f * removedDigit);
+		number = number / 10.0;
+		number = number - (0.1 * removedDigit);
 	}
-	digitNumber--;
 
+	digitNumber--;
+	if (fractionCount == 0) {
+		isFloat = 0;
+	}
+	if (fractionCount == 0 && digitNumber == 0) {
+		number = 0.0;
+	}
 	oldState = NUMPAD;
 }
 //NUMPAD BUTTONS
@@ -202,15 +207,15 @@ void drawNumpad() {
 	float tmpVal = (number < 0) ? -number : number;
 
 	int tmpInt1 = tmpVal;                  // Get the integer (678).
-	float tmpFrac = tmpVal - tmpInt1;      // Get fraction (0.0123).
+	double tmpFrac = tmpVal - tmpInt1;      // Get fraction (0.0123).
 	int tmpInt2 = trunc(tmpFrac * 10000);  // Turn into integer (123).
 
 	// Print as parts, note that you need 0-padding for fractional bit.
 
-	sprintf(numberString, "%s%d.%d", tmpSign, tmpInt1, tmpInt2);
+	sprintf(numberString, "%g", number);
 	ILI9163_fillRect(19, 5,92, 27, WHITE);
 	ILI9163_drawButton(&removeButton);
-	ILI9163_drawString(70 - digitNumber * 7, 10, Font_7x10, GREEN,
+	ILI9163_drawString(80 - digitNumber * 7, 10, Font_7x10, GREEN,
 			numberString);
 	switch (selectedParameter) {
 	case 1:

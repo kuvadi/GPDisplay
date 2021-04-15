@@ -189,12 +189,14 @@ int main(void) {
   /* USER CODE BEGIN WHILE */
 	unsigned long i = 0;
 	 while (1) {
-		 i++;
+		 /*
+		  i++;
 		 if(i > 500000){
 			 if(state == PLOT)
 				 GUI_drawGUI(huart2);
 			 i = 0;
 		 }
+		  * */
 
     /* USER CODE END WHILE */
 
@@ -540,7 +542,7 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : PE11 */
   GPIO_InitStruct.Pin = GPIO_PIN_11;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 

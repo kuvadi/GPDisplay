@@ -20,18 +20,19 @@ void EXTI15_10_IRQHandler(void) {
 	XPT2046_TouchGetCoordinates(&x, &y);
 	scrolling = 0;
 	uint8_t scrolled = 0;
+	int counter = 0;
 	while (!HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_11) && state == EXPMENU) {
 		uint16_t xLast, yLast;
 		XPT2046_TouchGetCoordinates(&xLast, &yLast);
-
+		XPT2046_TouchGetCoordinates(&xLast, &yLast);
 		// Check if scrolling
-		HAL_Delay(100);
+
 		if (HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_11)) {
 			break;
 		}
 		scrolled = 1;
 
-		scrolling = -(yLast - y - 20);
+		scrolling = -(yLast - y );
 		if(scrolling+position > 160){
 			scrolling = 160-position;
 		}
@@ -42,7 +43,12 @@ void EXTI15_10_IRQHandler(void) {
 		//read_exp_menu(scrolling+position);
 		drawExperimentMenu(1);
 		ILI9163_drawRect(0, ((scrolling+position)*140)/160, 4, (((scrolling+position)*140)/160)+20, 3, GREEN); // scroll bar
-		ILI9163_render();
+		if(counter > 10){
+			counter = 11;
+			ILI9163_render();
+		}
+
+		counter++;
 
 	}
 	position = position + scrolling;
@@ -51,7 +57,7 @@ void EXTI15_10_IRQHandler(void) {
 	}
 	if (position > 160)
 		position = 160;
-	if(scrolled == 1)
+	if(scrolled == 1 && scrolling > 5) //yanlış mantık eğer scroll edip aynı pozisyona gelirse buton çalışır
 		return;
 	switch (state) {
 	case MAINMENU:
@@ -108,12 +114,14 @@ void EXTI15_10_IRQHandler(void) {
 void GUI_drawGUI(UART_HandleTypeDef huart) {
 
 	// need to call for interrupts
+	/*
 	if (X > 50.0)
 		return;
 	float y = (float) ((rand() % 1000)/2 );
 	X = X + 1.0;
 	exp_isr(X, y);
 	ILI9163_render();
+	 * */
 
 }
 
