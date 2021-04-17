@@ -14,7 +14,7 @@ void expplotHandler() {
 	state = PLOT;
 }
 void aboutHandler() {
-
+	state = ABOUT;
 }
 Button exp = { 0, 128, 0, 50, "Experiment", 0x00f0, expHandler };
 Button expplot =  {  0, 128, 50, 100, "Draw Plot", 0x00f0, expplotHandler };

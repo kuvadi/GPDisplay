@@ -104,6 +104,7 @@ void EXTI15_10_IRQHandler(void) {
 	case PASTMENU:
 		break;
 	case ABOUT:
+		Scan_SD("/");
 		break;
 
 	}

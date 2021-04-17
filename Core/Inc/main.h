@@ -56,7 +56,7 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+#define MAXDATACOUNT 100
 
 //Functions and Variables
 enum State {MAINMENU, EXPMENU, NUMPAD, PLOT, PASTMENU, ABOUT};

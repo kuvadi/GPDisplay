@@ -36,7 +36,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define MAXDATACOUNT 100
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -128,8 +128,8 @@ int main(void) {
 	GUI_init();
 	fresult = f_mount(&fs, "", 0);
 
+	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 1, 0);
 	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
-	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 1, 1);
 
 
 /*
@@ -188,7 +188,15 @@ int main(void) {
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	unsigned long i = 0;
+	init_exp_file("experiment3");
+	for (int i = 0; i < 30; ++i) {
+		add_record_experiment(0.0, 0.5);
+
+	}
+
+	close_file();
 	 while (1) {
+		 GUI_drawGUI(huart2);
 		 /*
 		  i++;
 		 if(i > 500000){
@@ -642,7 +650,7 @@ void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi) // Your TxCpltCallback
 void exp_init(){
 	maxY = -999.0f;
 	minY = 999.0f;
-	fresult = f_open(&fil, "exp1.dat", FA_CREATE_ALWAYS | FA_WRITE);
+	init_exp_file("experiment");
 	flastp = 0;
 	expData = malloc(MAXDATACOUNT*sizeof(float));
 	//state = EXP
@@ -651,21 +659,17 @@ void exp_init(){
 void exp_isr(float x, float y){
 
 	//FILE OPERATIONS
-	fresult = f_lseek(&fil, flastp);
-	fresult = f_write(&fil, &x, sizeof(x), &bw);
-	fresult = f_lseek(&fil, flastp+MAXDATACOUNT*4);
-	fresult = f_write(&fil, &y, sizeof(y), &bw);
-	flastp += 4;
+	add_record_experiment(x, y);
 
 	//PLOT OPERATIONS
 	drawPoint( x,  y);
 
 }
 void exp_end(){
-	f_close(&fil);
+	close_file();
 }
 
-void exp_read(){
+void exp_read(){ //need parser
 	fresult = f_open(&fil, "exp1.dat",  FA_READ);
 	fresult = f_lseek(&fil, MAXDATACOUNT*4);
 	f_read (&fil, expData, MAXDATACOUNT*sizeof(float), &br);
