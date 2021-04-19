@@ -188,7 +188,7 @@ int main(void) {
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	unsigned long i = 0;
-	init_exp_file("experiment3");
+	init_exp_file("exp4");
 	for (int i = 0; i < 30; ++i) {
 		add_record_experiment(0.0, 0.5);
 

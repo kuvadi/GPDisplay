@@ -20,4 +20,5 @@ void Scan_SD (char* pat);
 void init_exp_file(char* name);
 void add_record_experiment(float x, float y);
 void close_file();
+void read_config_file();
 #endif /* INC_READ_SCREEN_SD_H_ */

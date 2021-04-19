@@ -67,6 +67,7 @@ float *expData;
 float minY, maxY;
 float X;
 uint8_t dataCount;
+char** files;
 
 unsigned long flastp;
 void exp_init();

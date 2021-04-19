@@ -64,6 +64,7 @@ void Scan_SD (char* pat)
     char *path = malloc(20*sizeof (char));
     sprintf (path, "%s",pat);
     uint8_t counter = 0;
+    uint8_t fileCount = 0;
     fresult = f_opendir(&dir, path);                       /* Open the directory */
     if (fresult == FR_OK)
     {
@@ -74,10 +75,7 @@ void Scan_SD (char* pat)
             if (fno.fattrib & AM_DIR)     /* It is a directory */
             {
             	if (!(strcmp ("SYSTEM~1", fno.fname))) continue;
-            	char *buf = malloc(30*sizeof(char));
-            	sprintf (buf, "Dir: %s\r\n", fno.fname);
 
-            	free(buf);
                 i = strlen(path);
                 sprintf(&path[i], "/%s", fno.fname);
                 Scan_SD(path);                     /* Enter the directory */
@@ -86,15 +84,43 @@ void Scan_SD (char* pat)
             }
             else
             {   /* It is a file. */
-           	   char *buf = malloc(30*sizeof(char));
-               sprintf(buf,"File: %s/%s\n", path, fno.fname);
-               ILI9163_drawString(0, 10+counter*10, Font_7x10, GREEN,
-               			buf);
 
-               free(buf);
                counter++;
             }
         }
+        fileCount = counter;
+        counter = 0;
+        //çirkin kod
+        files = malloc(fileCount * sizeof(char*));
+        fresult = f_opendir(&dir, path);
+        for (;;)
+                {
+                    f_readdir(&dir, &fno);                   /* Read a directory item */
+                    if (fresult != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
+                    if (fno.fattrib & AM_DIR)     /* It is a directory */
+                    {
+                    	if (!(strcmp ("SYSTEM~1", fno.fname))) continue;
+
+                        i = strlen(path);
+                        sprintf(&path[i], "/%s", fno.fname);
+                        Scan_SD(path);                     /* Enter the directory */
+
+                        path[i] = 0;
+                    }
+                    else
+                    {   /* It is a file. */
+
+                       files[counter] = malloc(strlen(fno.fname)*sizeof(char));
+                       strcpy(files[counter], fno.fname);
+                       //file names will be assigned to a global char**
+                       ILI9163_drawString(0, 10+counter*10, Font_7x10, GREEN,
+                    		   files[counter]);
+
+
+                       counter++;
+                    }
+                }
+
         f_closedir(&dir);
     }
     free(path);
@@ -133,5 +159,9 @@ void add_record_experiment(float x, float y) {
 
 void close_file(){
 	f_close(&fil);
+}
+
+void read_config_file(){
+
 }
 
