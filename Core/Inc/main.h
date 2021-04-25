@@ -33,7 +33,8 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "gui.h"
-#include "read_screen_sd.h"
+#include <read_sd.h>
+#include "button.h"
 
 /* USER CODE END Includes */
 
@@ -63,11 +64,14 @@ enum State {MAINMENU, EXPMENU, NUMPAD, PLOT, PASTMENU, ABOUT};
 enum State state;
 enum State oldState;
 char *expname;
-float *expData;
+float *expDataX;
+float *expDataY;
 float minY, maxY;
 float X;
 uint8_t dataCount;
 char** files;
+int expFileCount;
+Button** expFileButtons;
 
 unsigned long flastp;
 void exp_init();

@@ -20,7 +20,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "fatfs.h"
-#include "usb_host.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -59,10 +58,7 @@ DMA_HandleTypeDef hdma_spi1_tx;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-FATFS fs;  // file system
-FIL fil; // File
-FRESULT fresult;  // result
-UINT br, bw;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -74,7 +70,6 @@ static void MX_RTC_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_SPI3_Init(void);
-void MX_USB_HOST_Process(void);
 
 /* USER CODE BEGIN PFP */
 
@@ -119,15 +114,15 @@ int main(void) {
 	MX_ADC1_Init();
 	MX_RTC_Init();
 	MX_USART2_UART_Init();
-	MX_USB_HOST_Init();
 	MX_SPI1_Init();
 	MX_FATFS_Init();
 	MX_SPI3_Init();
 	/* USER CODE BEGIN 2 */
 	X = -50.0;
 	GUI_init();
-	fresult = f_mount(&fs, "", 0);
-
+	ILI9163_newFrame();
+	sd_init();
+	scan_sd("/");
 	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 1, 0);
 	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
@@ -187,6 +182,7 @@ int main(void) {
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
 	unsigned long i = 0;
 	init_exp_file("exp4");
 	for (int i = 0; i < 30; ++i) {
@@ -195,6 +191,7 @@ int main(void) {
 	}
 
 	close_file();
+	//parse_experiment_file("exp4.gpe");
 	 while (1) {
 		 GUI_drawGUI(huart2);
 		 /*
@@ -652,7 +649,7 @@ void exp_init(){
 	minY = 999.0f;
 	init_exp_file("experiment");
 	flastp = 0;
-	expData = malloc(MAXDATACOUNT*sizeof(float));
+	expDataY = malloc(MAXDATACOUNT*sizeof(float));
 	//state = EXP
 	//drawExpPlotFrame();
 }
@@ -669,11 +666,7 @@ void exp_end(){
 	close_file();
 }
 
-void exp_read(){ //need parser
-	fresult = f_open(&fil, "exp1.dat",  FA_READ);
-	fresult = f_lseek(&fil, MAXDATACOUNT*4);
-	f_read (&fil, expData, MAXDATACOUNT*sizeof(float), &br);
-}
+
 /* USER CODE END 4 */
 
 /**

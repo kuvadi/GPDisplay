@@ -11,7 +11,6 @@ Button expButton1 = { 0 };
 
 void GUI_init() {
 	ILI9163_init(1);
-	ILI9163_render();
 	XPT2046_TouchGetCoordinates(&x, &y);
 }
 
@@ -43,10 +42,7 @@ void EXTI15_10_IRQHandler(void) {
 		//read_exp_menu(scrolling+position);
 		drawExperimentMenu(1);
 		ILI9163_drawRect(0, ((scrolling+position)*140)/160, 4, (((scrolling+position)*140)/160)+20, 3, GREEN); // scroll bar
-		if(counter > 10){
-			counter = 11;
-			ILI9163_render();
-		}
+
 
 		counter++;
 
@@ -104,12 +100,11 @@ void EXTI15_10_IRQHandler(void) {
 	case PASTMENU:
 		break;
 	case ABOUT:
-		Scan_SD("/");
+
 		break;
 
 	}
 
-	ILI9163_render();
 	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_11);
 }
 void GUI_drawGUI(UART_HandleTypeDef huart) {

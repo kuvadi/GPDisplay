@@ -2,7 +2,7 @@
 #include <stdio.h> // printf
 #include <stdarg.h> // va_list, va_start, va_arg, va_end
 
-extern uint16_t frameBuffer[BUFSIZE] = { 0 };
+extern uint16_t frameBuffer[BUFSIZE/4] = { 0 };
 
 extern SPI_HandleTypeDef DISP_SPI;
 extern uint8_t SPI_DMA_FL;
@@ -13,18 +13,93 @@ uint16_t *get_buffer(){
 
 void drawImage(const uint16_t *image, uint8_t mode) {
 	if (mode == 0) {
-		for (int i = 0; i < BUFSIZE; i++) {
+		for (int i = 0; i < BUFSIZE / 4; i++) {
 
 			frameBuffer[i] = image[i + 128 * position];
 		}
-	} else {
-		for (int i = 0; i < BUFSIZE; i++) {
+		ILI9163_render1();
+		for (int i = 0; i < BUFSIZE / 4; i++) {
 
-			frameBuffer[i] = image[i + 128 * (scrolling+position)];
+			frameBuffer[i] = image[i+BUFSIZE/4 + 128 * position];
 		}
+		ILI9163_render2();
+		for (int i = 0; i < BUFSIZE / 4; i++) {
+
+			frameBuffer[i] = image[i+2*BUFSIZE/4 + 128 * position];
+		}
+		ILI9163_render3();
+		for (int i = 0; i < BUFSIZE / 4; i++) {
+
+			frameBuffer[i] = image[i+3*BUFSIZE/4 + 128 * position];
+		}
+		ILI9163_render4();
+	} else {
+		for (int i = 0; i < BUFSIZE/4; i++) {
+
+			frameBuffer[i] = image[i + 128 * (scrolling + position)];
+		}
+		ILI9163_render1();
+		for (int i = 0; i < BUFSIZE/4; i++) {
+
+			frameBuffer[i] = image[i+BUFSIZE/4 + 128 * (scrolling + position)];
+		}
+		ILI9163_render2();
+		for (int i = 0; i < BUFSIZE/4; i++) {
+
+			frameBuffer[i] = image[i+2*BUFSIZE/4  + 128 * (scrolling + position)];
+		}
+		ILI9163_render3();
+		for (int i = 0; i < BUFSIZE/4; i++) {
+
+			frameBuffer[i] = image[i+3*BUFSIZE/4 + 128 * (scrolling + position)];
+		}
+		ILI9163_render4();
 	}
 
 }
+
+void ILI9163_newFrame() {
+	for (uint32_t i = 0; i < (BUFSIZE/4); i++)
+		frameBuffer[i] = 0xFFFF;
+	ILI9163_render1();
+	ILI9163_render2();
+	ILI9163_render3();
+	ILI9163_render4();
+}
+
+void ILI9163_render1() {
+	ILI9163_setAddress(0, 0, ILI9163_WIDTH, ILI9163_HEIGHT);
+	HAL_GPIO_WritePin(DISP_CS_Port, DISP_CS_Pin, 0);
+	HAL_GPIO_WritePin(DISP_DC_Port, DISP_DC_Pin, 1);
+
+	HAL_SPI_Transmit_DMA(&DISP_SPI, (uint8_t*) frameBuffer, BUFSIZE / 2);
+	SPI_DMA_FL = 0;
+	while (!SPI_DMA_FL) {
+	}
+}
+
+void ILI9163_render2() {
+	HAL_SPI_Transmit_DMA(&DISP_SPI, (uint8_t*) frameBuffer, BUFSIZE / 2);
+	SPI_DMA_FL = 0;
+	while (!SPI_DMA_FL) {
+	}
+}
+
+void ILI9163_render3() {
+	HAL_SPI_Transmit_DMA(&DISP_SPI, (uint8_t*) frameBuffer, BUFSIZE / 2);
+	SPI_DMA_FL = 0;
+	while (!SPI_DMA_FL) {
+	}
+}
+
+void ILI9163_render4() {
+	HAL_SPI_Transmit_DMA(&DISP_SPI, (uint8_t*) frameBuffer, BUFSIZE / 2);
+	SPI_DMA_FL = 0;
+	while (!SPI_DMA_FL) {
+	}
+}
+
+
 
 void ILI9163_writeCommand(uint8_t address) {
 	HAL_GPIO_WritePin(DISP_CS_Port, DISP_CS_Pin, 0);
@@ -181,27 +256,15 @@ void ILI9163_init(int rotation) {
 	ILI9163_writeCommand(ILI9163_CMD_WRITE_MEMORY_START);
 }
 
-void ILI9163_newFrame() {
-	for (uint32_t i = 0; i < (ILI9163_WIDTH * ILI9163_HEIGHT); i++)
-		frameBuffer[i] = 0xFFFF;
-}
 
-void ILI9163_render() {
-	ILI9163_setAddress(0, 0, ILI9163_WIDTH, ILI9163_HEIGHT);
-	HAL_GPIO_WritePin(DISP_CS_Port, DISP_CS_Pin, 0);
-	HAL_GPIO_WritePin(DISP_DC_Port, DISP_DC_Pin, 1);
 
-	HAL_SPI_Transmit_DMA(&DISP_SPI, (uint8_t*) frameBuffer, BUFSIZE * 2);
 
-	SPI_DMA_FL = 0;
-	//while(!SPI_DMA_FL) {} // This can be commented out if your thread sends new frames slower than SPI transmits them. Otherwise, memory havoc. See README.md
-}
 
 void ILI9163_drawPixel(uint8_t x, uint8_t y, uint16_t color) {
 
-	if ((x < 0) || (x >= ILI9163_WIDTH) || (y < 0) || (y >= ILI9163_HEIGHT))
-		return;
-	frameBuffer[((x) + (y * ILI9163_WIDTH))] = color; // >> 8;
+
+	ILI9163_setAddress(x, y, x+1, y+1);
+	ILI9163_writeData16(color); // >> 8;
 	//frameBuffer[((x*2)+(y*2*ILI9163_WIDTH))+1] = color & 0xFF;
 }
 

@@ -122,6 +122,39 @@ void zeroHandler() {
 	oldState = NUMPAD;
 }
 void enterHandler() {
+
+	switch (selectedParameter) {
+	case 1:
+		range = number;
+		break;
+	case 2:
+		ei = number;
+		break;
+	case 3:
+		er1 = number;
+		break;
+	case 4:
+		er2 = number;
+		break;
+	case 5:
+		v = number;
+		break;
+	case 6:
+		scan = number;
+		break;
+	case 7:
+		resolution = number;
+		break;
+	case 8:
+		qtime = number;
+		break;
+	case 9:
+		break;
+	case 10:
+		break;
+	case 11:
+		break;
+	}
 	number = 0;
 	digitNumber = 0;
 	isFloat = 0;

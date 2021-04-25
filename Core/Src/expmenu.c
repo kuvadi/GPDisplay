@@ -134,5 +134,108 @@ void checkExperimentButtons() {
 }
 void drawExperimentMenu(uint8_t mode) {
 	drawImage(expImage, mode);
+	//stringlerin ekranda ayrılan bölüme oturtulması için formatlanması gerekiyor
+	// max 7 karakter basılabilir
+	int offset;
+	if(mode == 0){
+		offset = position;
+	}
+	else{
+		offset = position+scrolling;
+	}
+
+		switch(method){
+		case CYC:
+			ILI9163_drawString(10, 72-offset, Font_7x10, BLACK, "     Cyclic");
+			ILI9163_drawString(10, 82-offset, Font_7x10, BLACK, "  Voltammetry");
+
+			break;
+		case DPV:
+			ILI9163_drawString(10, 72-offset, Font_7x10, BLACK, "  Diff. Pulse");
+			ILI9163_drawString(10, 82-offset, Font_7x10, BLACK, "  Voltammetry");
+			break;
+		case SWV:
+			ILI9163_drawString(10, 72-offset, Font_7x10, BLACK, "  Square Wave");
+			ILI9163_drawString(10, 82-offset, Font_7x10, BLACK, "  Voltammetry");
+			break;
+		case LSV:
+			ILI9163_drawString(10, 72-offset, Font_7x10, BLACK, " Linear Sweep");
+			ILI9163_drawString(10, 82-offset, Font_7x10, BLACK, "  Voltammetry");
+			break;
+		case NPV:
+			ILI9163_drawString(10, 72-offset, Font_7x10, BLACK, " Normal Pulse");
+			ILI9163_drawString(10, 82-offset, Font_7x10, BLACK, "  Voltammetry");
+			break;
+		case CHR:
+			ILI9163_drawString(10, 72-offset, Font_7x10, BLACK, "Chronoamperometry");
+			break;
+		case AMP:
+			ILI9163_drawString(10, 72-offset, Font_7x10, BLACK, "  Amperometric");
+			break;
+		}
+		char buf[10];
+		sprintf(buf, "%g", er1);
+		int bufLen = strlen(buf);
+		if(bufLen < 7 ){
+			sprintf(buf, "%*.*s%g%*.*s",(7-bufLen)/2,(7-bufLen)/2," ", er1, (7-bufLen)/2,(7-bufLen)/2, " ");
+		}
+		ILI9163_drawString(10, 114-offset, Font_7x10, BLACK, buf);
+
+		sprintf(buf, "%g", er2);
+		bufLen = strlen(buf);
+		if(bufLen < 7 ){
+			sprintf(buf, "%*.*s%g%*.*s",(7-bufLen)/2,(7-bufLen)/2," ", er2, (7-bufLen)/2,(7-bufLen)/2, " ");
+		}
+		ILI9163_drawString(70, 114-offset, Font_7x10, BLACK, buf);
+
+		sprintf(buf, "%g", ei);
+		bufLen = strlen(buf);
+		if(bufLen < 7 ){
+			sprintf(buf, "%*.*s%g%*.*s",(7-bufLen)/2,(7-bufLen)/2," ", ei, (7-bufLen)/2,(7-bufLen)/2, " ");
+		}
+		ILI9163_drawString(10, 146-offset, Font_7x10, BLACK, buf);
+
+		sprintf(buf, "%g", v);
+		bufLen = strlen(buf);
+		if(bufLen < 7 ){
+			sprintf(buf, "%*.*s%g%*.*s",(7-bufLen)/2,(7-bufLen)/2," ", v, (7-bufLen)/2,(7-bufLen)/2, " ");
+		}
+		ILI9163_drawString(70, 146-offset, Font_7x10, BLACK, buf);
+
+		sprintf(buf, "%g", scan);
+		bufLen = strlen(buf);
+		if(bufLen < 7 ){
+			sprintf(buf, "%*.*s%g%*.*s",(7-bufLen)/2,(7-bufLen)/2," ", scan, (7-bufLen)/2,(7-bufLen)/2, " ");
+		}
+		ILI9163_drawString(10, 178-offset, Font_7x10, BLACK, buf);
+
+		sprintf(buf, "%g", resolution);
+		bufLen = strlen(buf);
+		if(bufLen < 7 ){
+			sprintf(buf, "%*.*s%g%*.*s",(7-bufLen)/2,(7-bufLen)/2," ", resolution, (7-bufLen)/2,(7-bufLen)/2, " ");
+		}
+		ILI9163_drawString(70, 178-offset, Font_7x10, BLACK, buf);
+
+		sprintf(buf, "%g", qtime);
+		bufLen = strlen(buf);
+		if(bufLen < 7 ){
+			sprintf(buf, "%*.*s%g%*.*s",(7-bufLen)/2,(7-bufLen)/2," ", qtime, (7-bufLen)/2,(7-bufLen)/2, " ");
+		}
+		ILI9163_drawString(10, 210-offset, Font_7x10, BLACK, buf);
+
+		sprintf(buf, "%g", range);
+		bufLen = strlen(buf);
+		if(bufLen < 15 ){
+			sprintf(buf, "%*.*s%g%*.*s",(15-bufLen)/2,(15-bufLen)/2," ", range, (15-bufLen)/2,(15-bufLen)/2, " ");
+		}
+		ILI9163_drawString(10, 242-offset, Font_7x10, BLACK, buf);
+		switch(cell){
+		case 0:
+			ILI9163_drawString(70, 210-offset, Font_7x10, BLACK, "  Off");
+			break;
+		case 1:
+			ILI9163_drawString(70, 210-offset, Font_7x10, BLACK, "   On");
+			break;
+		}
 }
 
