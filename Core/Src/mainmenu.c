@@ -57,5 +57,6 @@ void drawMainButtons() {
 	 ILI9163_drawButton(&expplot);
 	 ILI9163_drawButton(&past);
 	 ILI9163_drawButton(&about);
+	 ILI9163_render();
 }
 

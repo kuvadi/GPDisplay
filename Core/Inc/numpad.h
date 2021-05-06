@@ -6,7 +6,7 @@
 #include "button.h"
 
 
-double number ;
+double  number ;
 int digitNumber, fractionCount;
 uint8_t isFloat;
 void checkNumpadButtons();

@@ -12,6 +12,7 @@
 #include "string.h"
 #include "stdio.h"
 #include "ff.h"
+#include "protocols.h"
 
 void read_exp_menu(uint8_t offset);
 void read_numpad();

@@ -145,7 +145,7 @@ void drawExperimentMenu(uint8_t mode) {
 	}
 
 		switch(method){
-		case CYC:
+		case CV:
 			ILI9163_drawString(10, 72-offset, Font_7x10, BLACK, "     Cyclic");
 			ILI9163_drawString(10, 82-offset, Font_7x10, BLACK, "  Voltammetry");
 
@@ -166,7 +166,7 @@ void drawExperimentMenu(uint8_t mode) {
 			ILI9163_drawString(10, 72-offset, Font_7x10, BLACK, " Normal Pulse");
 			ILI9163_drawString(10, 82-offset, Font_7x10, BLACK, "  Voltammetry");
 			break;
-		case CHR:
+		case CA:
 			ILI9163_drawString(10, 72-offset, Font_7x10, BLACK, "Chronoamperometry");
 			break;
 		case AMP:
@@ -174,59 +174,93 @@ void drawExperimentMenu(uint8_t mode) {
 			break;
 		}
 		char buf[10];
-		sprintf(buf, "%g", er1);
+		sprintf(buf, "%d", er1);
 		int bufLen = strlen(buf);
 		if(bufLen < 7 ){
-			sprintf(buf, "%*.*s%g%*.*s",(7-bufLen)/2,(7-bufLen)/2," ", er1, (7-bufLen)/2,(7-bufLen)/2, " ");
+			sprintf(buf, "%*.*s%d%*.*s",(7-bufLen)/2,(7-bufLen)/2," ", er1, (7-bufLen)/2,(7-bufLen)/2, " ");
 		}
 		ILI9163_drawString(10, 114-offset, Font_7x10, BLACK, buf);
 
-		sprintf(buf, "%g", er2);
+		sprintf(buf, "%d", er2);
 		bufLen = strlen(buf);
 		if(bufLen < 7 ){
-			sprintf(buf, "%*.*s%g%*.*s",(7-bufLen)/2,(7-bufLen)/2," ", er2, (7-bufLen)/2,(7-bufLen)/2, " ");
+			sprintf(buf, "%*.*s%d%*.*s",(7-bufLen)/2,(7-bufLen)/2," ", er2, (7-bufLen)/2,(7-bufLen)/2, " ");
 		}
 		ILI9163_drawString(70, 114-offset, Font_7x10, BLACK, buf);
 
-		sprintf(buf, "%g", ei);
+		sprintf(buf, "%d", ei);
 		bufLen = strlen(buf);
 		if(bufLen < 7 ){
-			sprintf(buf, "%*.*s%g%*.*s",(7-bufLen)/2,(7-bufLen)/2," ", ei, (7-bufLen)/2,(7-bufLen)/2, " ");
+			sprintf(buf, "%*.*s%d%*.*s",(7-bufLen)/2,(7-bufLen)/2," ", ei, (7-bufLen)/2,(7-bufLen)/2, " ");
 		}
 		ILI9163_drawString(10, 146-offset, Font_7x10, BLACK, buf);
 
-		sprintf(buf, "%g", v);
-		bufLen = strlen(buf);
-		if(bufLen < 7 ){
-			sprintf(buf, "%*.*s%g%*.*s",(7-bufLen)/2,(7-bufLen)/2," ", v, (7-bufLen)/2,(7-bufLen)/2, " ");
-		}
-		ILI9163_drawString(70, 146-offset, Font_7x10, BLACK, buf);
+	char numberString[20];
 
-		sprintf(buf, "%g", scan);
-		bufLen = strlen(buf);
-		if(bufLen < 7 ){
-			sprintf(buf, "%*.*s%g%*.*s",(7-bufLen)/2,(7-bufLen)/2," ", scan, (7-bufLen)/2,(7-bufLen)/2, " ");
-		}
-		ILI9163_drawString(10, 178-offset, Font_7x10, BLACK, buf);
+	char *tmpSign = (v < 0) ? "-" : "";
+	float tmpVal = (v < 0) ? -v : v;
 
-		sprintf(buf, "%g", resolution);
-		bufLen = strlen(buf);
-		if(bufLen < 7 ){
-			sprintf(buf, "%*.*s%g%*.*s",(7-bufLen)/2,(7-bufLen)/2," ", resolution, (7-bufLen)/2,(7-bufLen)/2, " ");
-		}
-		ILI9163_drawString(70, 178-offset, Font_7x10, BLACK, buf);
+	int tmpInt1 = tmpVal;                  // Get the integer (678).
+	double tmpFrac = tmpVal - tmpInt1;      // Get fraction (0.0123).
+	int tmpInt2 = trunc(tmpFrac * 10000);  // Turn into integer (123).
 
-		sprintf(buf, "%g", qtime);
+	// Print as parts, note that you need 0-padding for fractional bit.
+
+	sprintf(numberString, "%d.%d", tmpInt1, tmpInt2);
+		//sprintf(buf, "%g", v);
+		//bufLen = strlen(buf);
+		//if(bufLen < 7 ){
+		//	sprintf(buf, "%*.*s%g%*.*s",(7-bufLen)/2,(7-bufLen)/2," ", v, (7-bufLen)/2,(7-bufLen)/2, " ");
+		//}
+		ILI9163_drawString(70, 146-offset, Font_7x10, BLACK, numberString);
+
+
+		tmpSign = (v < 0) ? "-" : "";
+			 tmpVal = (v < 0) ? -scan : scan;
+
+			 tmpInt1 = tmpVal;                  // Get the integer (678).
+			 tmpFrac = tmpVal - tmpInt1;      // Get fraction (0.0123).
+			 tmpInt2 = trunc(tmpFrac * 10000);  // Turn into integer (123).
+
+			// Print as parts, note that you need 0-padding for fractional bit.
+
+			sprintf(numberString, "%d.%d", tmpInt1, tmpInt2);
+		//sprintf(buf, "%g", scan);
+		//bufLen = strlen(buf);
+		//if(bufLen < 7 ){
+		//	sprintf(buf, "%*.*s%g%*.*s",(7-bufLen)/2,(7-bufLen)/2," ", scan, (7-bufLen)/2,(7-bufLen)/2, " ");
+		//}
+		ILI9163_drawString(10, 178-offset, Font_7x10, BLACK, numberString);
+
+
+		tmpSign = (v < 0) ? "-" : "";
+					 tmpVal = (v < 0) ? -resolution : resolution;
+
+					 tmpInt1 = tmpVal;                  // Get the integer (678).
+					 tmpFrac = tmpVal - tmpInt1;      // Get fraction (0.0123).
+					 tmpInt2 = trunc(tmpFrac * 10000);  // Turn into integer (123).
+
+					// Print as parts, note that you need 0-padding for fractional bit.
+
+					sprintf(numberString, "%d.%d", tmpInt1, tmpInt2);
+		//sprintf(buf, "%g", resolution);
+		//bufLen = strlen(buf);
+		//if(bufLen < 7 ){
+		//	sprintf(buf, "%*.*s%g%*.*s",(7-bufLen)/2,(7-bufLen)/2," ", resolution, (7-bufLen)/2,(7-bufLen)/2, " ");
+		//}
+		ILI9163_drawString(70, 178-offset, Font_7x10, BLACK, numberString);
+
+		sprintf(buf, "%d", qtime);
 		bufLen = strlen(buf);
 		if(bufLen < 7 ){
-			sprintf(buf, "%*.*s%g%*.*s",(7-bufLen)/2,(7-bufLen)/2," ", qtime, (7-bufLen)/2,(7-bufLen)/2, " ");
+			sprintf(buf, "%*.*s%d%*.*s",(7-bufLen)/2,(7-bufLen)/2," ", qtime, (7-bufLen)/2,(7-bufLen)/2, " ");
 		}
 		ILI9163_drawString(10, 210-offset, Font_7x10, BLACK, buf);
 
-		sprintf(buf, "%g", range);
+		sprintf(buf, "%d", range);
 		bufLen = strlen(buf);
 		if(bufLen < 15 ){
-			sprintf(buf, "%*.*s%g%*.*s",(15-bufLen)/2,(15-bufLen)/2," ", range, (15-bufLen)/2,(15-bufLen)/2, " ");
+			sprintf(buf, "%*.*s%d%*.*s",(15-bufLen)/2,(15-bufLen)/2," ", range, (15-bufLen)/2,(15-bufLen)/2, " ");
 		}
 		ILI9163_drawString(10, 242-offset, Font_7x10, BLACK, buf);
 		switch(cell){
@@ -237,5 +271,6 @@ void drawExperimentMenu(uint8_t mode) {
 			ILI9163_drawString(70, 210-offset, Font_7x10, BLACK, "   On");
 			break;
 		}
+		ILI9163_render();
 }
 

@@ -186,7 +186,7 @@ int main(void) {
 	unsigned long i = 0;
 	init_exp_file("exp4");
 	for (int i = 0; i < 30; ++i) {
-		add_record_experiment(0.0, 0.5);
+		//add_record_experiment(0.0, 0.5);
 
 	}
 
@@ -194,6 +194,7 @@ int main(void) {
 	//parse_experiment_file("exp4.gpe");
 	 while (1) {
 		 GUI_drawGUI(huart2);
+
 		 /*
 		  i++;
 		 if(i > 500000){
@@ -649,7 +650,7 @@ void exp_init(){
 	minY = 999.0f;
 	init_exp_file("experiment");
 	flastp = 0;
-	expDataY = malloc(MAXDATACOUNT*sizeof(float));
+	//expDataYch1 = malloc(MAXDATACOUNT*sizeof(float));
 	//state = EXP
 	//drawExpPlotFrame();
 }

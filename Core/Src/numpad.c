@@ -244,11 +244,11 @@ void drawNumpad() {
 	int tmpInt2 = trunc(tmpFrac * 10000);  // Turn into integer (123).
 
 	// Print as parts, note that you need 0-padding for fractional bit.
-
-	sprintf(numberString, "%g", number);
 	ILI9163_fillRect(19, 5,92, 27, WHITE);
+	sprintf(numberString, "%d.%d", tmpInt1, tmpInt2);
+
 	ILI9163_drawButton(&removeButton);
-	ILI9163_drawString(80 - digitNumber * 7, 10, Font_7x10, GREEN,
+	ILI9163_drawString(70 - digitNumber * 7, 10, Font_7x10, GREEN,
 			numberString);
 	switch (selectedParameter) {
 	case 1:
@@ -267,5 +267,6 @@ void drawNumpad() {
 		ILI9163_drawString(20, 10, Font_7x10, GREEN, "V");
 		break;
 	}
+	ILI9163_render();
 }
 

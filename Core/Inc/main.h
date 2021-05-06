@@ -33,8 +33,10 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "gui.h"
+
 #include <read_sd.h>
 #include "button.h"
+
 
 /* USER CODE END Includes */
 
@@ -64,8 +66,11 @@ enum State {MAINMENU, EXPMENU, NUMPAD, PLOT, PASTMENU, ABOUT};
 enum State state;
 enum State oldState;
 char *expname;
-float *expDataX;
-float *expDataY;
+float *expDataXch1;
+float *expDataYch1;
+float *expDataXch2;
+float *expDataYch2;
+
 float minY, maxY;
 float X;
 uint8_t dataCount;

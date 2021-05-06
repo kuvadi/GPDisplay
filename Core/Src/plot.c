@@ -47,7 +47,7 @@ void drawPlot() {
 void drawPoint(float x, float y) {
 
 	dataCount++;
-	expDataY[dataCount] = y;
+	expDataYch1[dataCount] = y;
 
 	clearGraphArea();
 
@@ -86,25 +86,25 @@ void drawWholeGraph() {
 	//ILI9163_newFrame();
 	float max = -999.0f, min = 999.0f;
 	for (int i = 2; i < dataCount-2; i++) {
-		if ((expDataY[i - 2] + expDataY[i - 1] + expDataY[i] + expDataY[i + 1]
-				+ expDataY[i + 2]) / 5 < min) {
-			min = (expDataY[i - 2] + expDataY[i - 1] + expDataY[i] + expDataY[i + 1]
-					+ expDataY[i + 2]) / 5;
+		if ((expDataYch1[i - 2] + expDataYch1[i - 1] + expDataYch1[i] + expDataYch1[i + 1]
+				+ expDataYch1[i + 2]) / 5 < min) {
+			min = (expDataYch1[i - 2] + expDataYch1[i - 1] + expDataYch1[i] + expDataYch1[i + 1]
+					+ expDataYch1[i + 2]) / 5;
 			;
 		}
-		if ((expDataY[i - 2] + expDataY[i - 1] + expDataY[i] + expDataY[i + 1]
-				+ expDataY[i + 2]) / 5 > max) {
-			max = (expDataY[i - 2] + expDataY[i - 1] + expDataY[i] + expDataY[i + 1]
-					+ expDataY[i + 2]) / 5;
+		if ((expDataYch1[i - 2] + expDataYch1[i - 1] + expDataYch1[i] + expDataYch1[i + 1]
+				+ expDataYch1[i + 2]) / 5 > max) {
+			max = (expDataYch1[i - 2] + expDataYch1[i - 1] + expDataYch1[i] + expDataYch1[i + 1]
+					+ expDataYch1[i + 2]) / 5;
 		}
 	}
 	minY = min;
 	maxY = max;
 	for (int i = 2; i < dataCount - 3; i++) {
-		float val = (expDataY[i - 2] + expDataY[i - 1] + expDataY[i]
-				+ expDataY[i + 1] + expDataY[i + 2]) / 5;
-		float nextVal = (expDataY[i - 1] + expDataY[i] + expDataY[i + 1]
-				+ expDataY[i + 2] + expDataY[i + 3]) / 5;
+		float val = (expDataYch1[i - 2] + expDataYch1[i - 1] + expDataYch1[i]
+				+ expDataYch1[i + 1] + expDataYch1[i + 2]) / 5;
+		float nextVal = (expDataYch1[i - 1] + expDataYch1[i] + expDataYch1[i + 1]
+				+ expDataYch1[i + 2] + expDataYch1[i + 3]) / 5;
 		ILI9163_drawLine((i * 128 / dataCount),
 				32 + 80 - ((val-minY) * 80 / (maxY - minY)),
 				(i * 128 / dataCount + 128 / dataCount),
